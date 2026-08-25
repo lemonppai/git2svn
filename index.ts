@@ -83,8 +83,8 @@ async function syncGitToSvn(GIT_REPO_URL: string, GIT_BRANCH: string, SVN_REPO_U
   // 5a. 标记所有未跟踪的文件为新增（包括修改过的文件会被自动覆盖）
   runCommand('svn add --force .', SVN_WORK_DIR);
   // 5b. 标记已删除的文件（在 Git 中删除但在 SVN 中仍存在的文件）
-  const statusOutput = runCommand('svn status', SVN_WORK_DIR);
-  const lines = statusOutput.split('\n').filter(l => l.startsWith('!'));
+  let statusOutput = runCommand('svn status', SVN_WORK_DIR);
+  let lines = statusOutput.split('\n').filter(l => l.startsWith('!'));
   for (const line of lines) {
     const file = line.substring(8).trim(); // 跳过 "!       "
     if (file) {
@@ -92,6 +92,22 @@ async function syncGitToSvn(GIT_REPO_URL: string, GIT_BRANCH: string, SVN_REPO_U
     }
   }
   spinner.succeed('处理 SVN 变更完成');
+
+  statusOutput = runCommand('svn status', SVN_WORK_DIR);
+  lines = statusOutput.split('\n');
+
+  let added = 0, deleted = 0, modified = 0;
+  for (const line of lines) {
+    if (line.startsWith('A')) {
+      added++;
+    } else if (line.startsWith('D')) {
+      deleted++;
+    } else if (line.startsWith('M')) {
+      modified++;
+    }
+  }
+
+  console.log(`${chalk.green(logSymbols.success)} 新增(A): ${chalk.blueBright.bold(added)} 修改(M): ${chalk.cyan.bold(modified)} 删除(D): ${chalk.red.bold(deleted)}`);
 
   // 6. 提交到 SVN
   const { commitMessage } = await inquirer.prompt([
