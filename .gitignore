@@ -2,6 +2,9 @@
 node_modules
 /dist
 
+# 工具运行时生成的工作副本
+/.git2svn
+
 # local env files
 .env.local
 .env.*.local
@@ -19,3 +22,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+.workbuddy

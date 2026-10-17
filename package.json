@@ -1,34 +1,47 @@
 {
   "name": "git2svn",
-  "version": "0.1.1",
+  "version": "0.3.0",
+  "description": "Git ↔ SVN 双向镜像 CLI：把 Git 分支同步到 SVN，或把 SVN 内容提交回 Git，支持项目清单、增量工作副本、非交互模式与变更统计",
   "type": "module",
   "license": "MIT",
-  "scripts": {
-    "start": "node index.ts",
-    "build": "esbuild index.ts --format=esm --outfile=dist/index.js",
-    "prepublishOnly": "npm run build"
+  "author": "九林 <lemonppai@qq.com>",
+  "bin": {
+    "git2svn": "bin/cli.js"
+  },
+  "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lemonppai/git2svn.git"
   },
-  "engines": {
-    "node": ">=23.0.0"
-  },
-  "bin": {
-    "git2svn": "bin/cli.js"
-  },
   "keywords": [
     "git",
     "svn",
-    "sync"
+    "sync",
+    "mirror",
+    "bidirectional",
+    "subversion",
+    "cli",
+    "双向同步"
   ],
-  "files": [
-    "dist/index.js"
-  ],
+  "scripts": {
+    "start": "npm run build && node bin/cli.js",
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --test tests/run.mjs",
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
   "dependencies": {
-    "@types/node": "^26.1.1",
-    "app-root-path": "^3.1.0",
     "cfonts": "^3.3.1",
     "chalk": "^6.0.0",
     "inquirer": "^14.0.2",
@@ -37,6 +50,8 @@
     "ora": "^9.4.1"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "@types/node": "^26.1.1",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.7.3"
   }
 }
